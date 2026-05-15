@@ -1,40 +1,21 @@
-# Backend
-target/
-build/
-out/
-bin/
-*.class
-*.jar
-*.war
+# IDEs
+.idea/
+.vscode/
+*.iml
 
-# Frontend
+# OS files
+.DS_Store
+Thumbs.db
+
+# Generic ignores
 node_modules/
+target/
 dist/
-dist-ssr/
-coverage/
-
-# Logs
-logs/
+build/
+bin/
+out/
 *.log
 
 # Environment
 .env
 .env.*
-*.local
-
-# IDE
-.idea/
-*.iml
-
-.vscode/*
-!.vscode/extensions.json
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Temp
-tmp/
-temp/
-*.tmp
-*.swp

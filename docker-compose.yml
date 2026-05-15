@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   app:
-    build: .
+    build: ./backend
     container_name: ecommerce_app
     ports:
       - "8080:8080"
@@ -30,7 +30,7 @@ services:
       - MYSQL_ROOT_PASSWORD=123456
     volumes:
       - db_data:/var/lib/mysql
-      - ./database.sql:/docker-entrypoint-initdb.d/1-schema.sql
+      - ./docker/mysql/database.sql:/docker-entrypoint-initdb.d/1-schema.sql
     networks:
       - ecommerce_network
     healthcheck:
