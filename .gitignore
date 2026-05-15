@@ -1,40 +1,40 @@
+# Backend
 target/
-.idea/
-*.iml
-# --- 1. Dependencies & Packages ---
-node_modules/
-jspm_packages/
-# --- 2. Build & Output ---
-dist/
-dist-ssr/
 build/
 out/
 bin/
-obj/
+*.class
+*.jar
+*.war
 
-# --- 3. Logs & Debugging ---
+# Frontend
+node_modules/
+dist/
+dist-ssr/
+coverage/
 
-logs
+# Logs
+logs/
 *.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
 
-
+# Environment
 .env
 .env.*
 *.local
 
+# IDE
+.idea/
+*.iml
 
 .vscode/*
 !.vscode/extensions.json
-.idea/
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+
+# OS
 .DS_Store
 Thumbs.db
+
+# Temp
+tmp/
+temp/
+*.tmp
+*.swp
