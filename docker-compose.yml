@@ -11,7 +11,7 @@ services:
       - DB_PORT=3306
       - DB_NAME=ecommerce_db
       - DB_USER=root
-      - DB_PASS=123456
+      - DB_PASSWORD=123456
     depends_on:
       mysql-db:
         condition: service_healthy
@@ -34,7 +34,7 @@ services:
     networks:
       - ecommerce_network
     healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpassword" ]
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p123456" ]
       interval: 10s
       timeout: 5s
       retries: 5

@@ -5,6 +5,10 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Cart from './pages/Cart';
+import Checkout from './pages/Checkout';
+import Orders from './pages/Orders';
+import Products from './pages/Products';
+import ProductDetail from './pages/ProductDetail';
 import ProtectedRoute from './components/ProtectedRoute';
 
 // Placeholder components for unimplemented pages
@@ -22,14 +26,14 @@ function App() {
         <Route index element={<Home />} />
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
-        <Route path="products" element={<Placeholder title="Product List" />} />
-        <Route path="products/:id" element={<Placeholder title="Product Detail" />} />
+        <Route path="products" element={<Products />} />
+        <Route path="products/:id" element={<ProductDetail />} />
         
         {/* Protected User Routes */}
         <Route element={<ProtectedRoute />}>
           <Route path="cart" element={<Cart />} />
-          <Route path="checkout" element={<Placeholder title="Checkout" />} />
-          <Route path="orders" element={<Placeholder title="Order History" />} />
+          <Route path="checkout" element={<Checkout />} />
+          <Route path="orders" element={<Orders />} />
           <Route path="profile" element={<Placeholder title="User Profile" />} />
         </Route>
       </Route>

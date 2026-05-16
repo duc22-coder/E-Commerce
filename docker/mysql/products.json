@@ -1,0 +1,52 @@
+[
+  {
+    "name": "iPhone 15 Pro",
+    "description": "Apple iPhone 15 Pro with Titanium design and A17 Pro chip.",
+    "price": 999.00,
+    "stockQuantity": 50,
+    "brand": "Apple",
+    "categoryId": 1,
+    "imageUrls": ["https://images.unsplash.com/photo-1696446701796-da61225697cc"],
+    "sizes": []
+  },
+  {
+    "name": "MacBook Air M2",
+    "description": "13-inch MacBook Air with M2 chip, 8GB RAM, 256GB SSD.",
+    "price": 1099.00,
+    "stockQuantity": 30,
+    "brand": "Apple",
+    "categoryId": 1,
+    "imageUrls": ["https://images.unsplash.com/photo-1611186871348-b1ec696e5237"],
+    "sizes": []
+  },
+  {
+    "name": "Sony WH-1000XM5",
+    "description": "Industry-leading noise-canceling headphones.",
+    "price": 348.00,
+    "stockQuantity": 100,
+    "brand": "Sony",
+    "categoryId": 1,
+    "imageUrls": ["https://images.unsplash.com/photo-1618366712277-7070430238c0"],
+    "sizes": []
+  },
+  {
+    "name": "Classic White T-Shirt",
+    "description": "Premium cotton crew neck t-shirt for daily wear.",
+    "price": 25.00,
+    "stockQuantity": 500,
+    "brand": "CottonOn",
+    "categoryId": 2,
+    "imageUrls": ["https://images.unsplash.com/photo-1521572163474-6864f9cf17ab"],
+    "sizes": ["S", "M", "L", "XL"]
+  },
+  {
+    "name": "Slim Fit Denim Jeans",
+    "description": "Dark wash slim fit jeans with slight stretch.",
+    "price": 55.00,
+    "stockQuantity": 200,
+    "brand": "Levi's",
+    "categoryId": 2,
+    "imageUrls": ["https://images.unsplash.com/photo-1542272604-787c3835535d"],
+    "sizes": ["30", "32", "34", "36"]
+  }
+]
