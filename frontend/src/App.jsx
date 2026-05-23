@@ -9,6 +9,7 @@ import Checkout from './pages/Checkout';
 import Orders from './pages/Orders';
 import Products from './pages/Products';
 import ProductDetail from './pages/ProductDetail';
+import Profile from './pages/Profile';
 import ProtectedRoute from './components/ProtectedRoute';
 
 // Placeholder components for unimplemented pages
@@ -34,7 +35,7 @@ function App() {
           <Route path="cart" element={<Cart />} />
           <Route path="checkout" element={<Checkout />} />
           <Route path="orders" element={<Orders />} />
-          <Route path="profile" element={<Placeholder title="User Profile" />} />
+          <Route path="profile" element={<Profile />} />
         </Route>
       </Route>
 

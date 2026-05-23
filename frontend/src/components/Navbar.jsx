@@ -1,11 +1,11 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ShoppingCart, User, LogOut, Menu, X, Search, Heart, Package, ShoppingBag } from 'lucide-react';
+import { ShoppingCart, User, LogOut, Menu, X, Search, Package, ShoppingBag, LayoutDashboard } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 
 const Navbar = () => {
-  const { user, logout, isAuthenticated } = useAuth();
+  const { user, logout, isAuthenticated, isAdmin } = useAuth();
   const { cartItems } = useCart();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -32,8 +32,6 @@ const Navbar = () => {
   const navLinks = [
     { name: 'Trang chủ', path: '/' },
     { name: 'Sản phẩm', path: '/products' },
-    { name: 'Khuyến mãi', path: '#' },
-    { name: 'Tin tức', path: '#' },
   ];
 
   return (
@@ -71,19 +69,17 @@ const Navbar = () => {
                 type="text" 
                 placeholder="Tìm kiếm sản phẩm..." 
                 className="w-full bg-gray-50 border border-gray-100 rounded-2xl py-2.5 pl-11 pr-4 text-sm font-medium focus:bg-white focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    navigate(`/products?search=${e.target.value}`);
+                  }
+                }}
               />
             </div>
           </div>
 
           {/* Icons & Actions */}
-          <div className="flex items-center gap-2 sm:gap-4">
-            <button className="hidden sm:flex w-10 h-10 items-center justify-center text-gray-500 hover:bg-gray-50 rounded-full transition-all">
-              <Search className="w-5 h-5" />
-            </button>
-            <button className="hidden sm:flex w-10 h-10 items-center justify-center text-gray-500 hover:bg-gray-50 rounded-full transition-all">
-              <Heart className="w-5 h-5" />
-            </button>
-            
+          <div className="flex items-center gap-4">
             <Link to="/cart" className="relative w-10 h-10 flex items-center justify-center text-gray-500 hover:bg-gray-50 rounded-full transition-all group">
               <ShoppingCart className="w-5 h-5" />
               {cartItems.length > 0 && (
@@ -92,8 +88,6 @@ const Navbar = () => {
                 </span>
               )}
             </Link>
-
-            <div className="h-6 w-px bg-gray-100 mx-2 hidden sm:block"></div>
 
             {isAuthenticated ? (
               <div className="relative" ref={profileRef}>
@@ -116,6 +110,15 @@ const Navbar = () => {
                       <p className="text-sm font-black text-gray-900 truncate">{user?.firstName} {user?.lastName}</p>
                     </div>
                     <div className="p-2">
+                      {isAdmin && (
+                        <Link 
+                          to="/admin" 
+                          onClick={() => setIsProfileOpen(false)}
+                          className="flex items-center gap-3 px-3 py-2 text-sm font-bold text-blue-600 hover:bg-blue-50 rounded-xl transition-all"
+                        >
+                          <LayoutDashboard className="w-4 h-4" /> Trang quản trị
+                        </Link>
+                      )}
                       <Link 
                         to="/profile" 
                         onClick={() => setIsProfileOpen(false)}
@@ -173,17 +176,17 @@ const Navbar = () => {
               {link.name}
             </Link>
           ))}
-          <div className="pt-4 mt-4 border-t border-gray-100 flex gap-4">
-            {!isAuthenticated && (
+          {!isAuthenticated && (
+            <div className="pt-4 mt-4 border-t border-gray-100">
               <Link 
                 to="/login" 
-                className="flex-1 bg-blue-600 text-white text-center py-3 rounded-xl font-bold shadow-lg"
+                className="block w-full bg-blue-600 text-white text-center py-3 rounded-xl font-bold shadow-lg"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Đăng nhập
               </Link>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       )}
     </nav>

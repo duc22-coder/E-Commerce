@@ -228,7 +228,11 @@ const Checkout = () => {
                 <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 animate-in zoom-in duration-300">
                   <div className="flex flex-col md:flex-row gap-8 items-center">
                     <div className="w-full md:w-1/2 p-4 bg-gray-50 rounded-2xl border border-gray-100 relative group">
-                      <img src={techcombankQr} alt="Techcombank QR" className="w-full rounded-xl shadow-lg" />
+                      <img 
+                        src={`https://img.vietqr.io/image/TCB-2208200588-compact2.png?amount=${getCartTotal()}&addInfo=LUUCODE%20THANH%20TOAN&accountName=NGUYEN%20ANH%20DUC`} 
+                        alt="Techcombank QR" 
+                        className="w-full rounded-xl shadow-lg" 
+                      />
                       <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-full flex items-center gap-2 text-xs font-bold text-blue-600 shadow-sm">
                         <Timer className="w-3.5 h-3.5 animate-pulse" /> {formatTime(timeLeft)}
                       </div>
