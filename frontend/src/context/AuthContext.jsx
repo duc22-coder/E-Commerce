@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 import api from '../api/axios';
@@ -8,20 +8,39 @@ const AuthContext = createContext();
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
   const [token, setToken] = useState(localStorage.getItem('token') || null);
+  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
+  // Centralized logout function
+  const logout = useCallback(() => {
+    setToken(null);
+    setUser(null);
+    localStorage.removeItem('token');
+    navigate('/login');
+  }, [navigate]);
+
+  // Single source of truth for user state based on the JWT
   useEffect(() => {
     if (token) {
       try {
         const decoded = jwtDecode(token);
-        // Assuming your JWT contains user info like roles, username
+        
+        // Check for token expiration
+        const currentTime = Date.now() / 1000;
+        if (decoded.exp < currentTime) {
+          console.warn("Token expired, logging out.");
+          logout();
+          return;
+        }
+
+        // Set user state strictly from token payload
         setUser({
           username: decoded.sub,
-          roles: decoded.roles || [], // adjust based on actual JWT structure
-          // decode other user details if available
+          firstName: decoded.firstName,
+          lastName: decoded.lastName,
+          roles: decoded.roles || [],
         });
         localStorage.setItem('token', token);
       } catch (error) {
@@ -33,15 +52,15 @@ export const AuthProvider = ({ children }) => {
       localStorage.removeItem('token');
     }
     setLoading(false);
-  }, [token]);
+  }, [token, logout]);
 
   const login = async (email, password) => {
     try {
       const response = await api.post('/auth/login', { email, password });
-      const { token, user: userDto } = response.data;
+      const { token } = response.data;
+      
+      // Setting token triggers the useEffect above to decode and set user
       setToken(token);
-      // Also store user details returned by backend directly
-      if (userDto) setUser(userDto);
       return { success: true };
     } catch (error) {
       return {
@@ -63,17 +82,11 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const logout = () => {
-    setToken(null);
-    setUser(null);
-    localStorage.removeItem('token');
-    navigate('/login');
-  };
-
   const isAuthenticated = !!user;
-  const isAdmin = user?.roles?.includes('ROLE_ADMIN');
+  const isAdmin = user?.roles?.includes('ROLE_ADMIN') || false;
 
-  const value = {
+  // Memoize context value to prevent unnecessary re-renders
+  const value = useMemo(() => ({
     user,
     token,
     loading,
@@ -82,7 +95,7 @@ export const AuthProvider = ({ children }) => {
     logout,
     isAuthenticated,
     isAdmin
-  };
+  }), [user, token, loading, logout, isAuthenticated, isAdmin]);
 
   return (
     <AuthContext.Provider value={value}>
