@@ -216,7 +216,7 @@ const ManageOrders = () => {
                     <div key={item.id} className="flex gap-4 p-3 bg-gray-50 rounded-2xl border border-gray-100 items-center justify-between">
                       <div className="flex gap-4 items-center">
                         <div className="w-12 h-12 bg-white rounded-xl overflow-hidden border border-gray-100 shrink-0">
-                          <img src={item.productImageUrl || 'https://via.placeholder.com/150'} alt={item.productName} className="w-full h-full object-cover" />
+                          <img src={item.productImageUrl || 'https://placehold.co/150x150'} alt={item.productName} className="w-full h-full object-cover" />
                         </div>
                         <div>
                           <p className="text-sm font-bold text-gray-900 truncate max-w-[250px]">{item.productName}</p>

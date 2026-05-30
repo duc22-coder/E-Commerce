@@ -6,6 +6,7 @@ import { useCart } from '../context/CartContext';
 import LoadingSpinner from '../components/LoadingSpinner';
 import formatCurrency from '../utils/formatCurrency';
 import Toast from '../components/Toast';
+import { optimizeUnsplashUrl } from '../utils/optimizeImage';
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -67,9 +68,10 @@ const ProductDetail = () => {
     );
   }
 
-  const images = product.images && product.images.length > 0 
-    ? product.images.map(img => img.imageUrl) 
-    : ['https://via.placeholder.com/800x800?text=Chưa+có+ảnh'];
+  const images = (product.imageUrls && product.imageUrls.length > 0 
+    ? product.imageUrls 
+    : (product.images && product.images.length > 0 ? product.images.map(img => img.imageUrl) : ['https://placehold.co/800x800?text=Chưa+có+ảnh']))
+    .map(url => optimizeUnsplashUrl(url, 800));
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -88,11 +90,13 @@ const ProductDetail = () => {
         <div className="space-y-6">
           <div className="aspect-square rounded-[2.5rem] overflow-hidden bg-gray-50 border border-gray-100 shadow-2xl shadow-gray-200/50 group">
             <img 
-              src={images[selectedImage]} 
-              alt={product.name} 
-              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-              onError={(e) => { e.target.src = 'https://via.placeholder.com/800x800?text=Ảnh+lỗi'; }}
-            />
+               src={images[selectedImage]} 
+               alt={product.name} 
+               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+               referrerPolicy="no-referrer"
+               loading="lazy"
+               onError={(e) => { if (!e.target.dataset.retry) { e.target.dataset.retry = '1'; e.target.src = 'https://placehold.co/800x800?text=Ảnh+lỗi'; } }}
+             />
           </div>
           {images.length > 1 && (
             <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
@@ -104,7 +108,7 @@ const ProductDetail = () => {
                     selectedImage === index ? 'border-blue-600 ring-4 ring-blue-500/10 scale-105 shadow-lg' : 'border-transparent opacity-60 hover:opacity-100'
                   }`}
                 >
-                  <img src={img} alt={`${product.name} ${index}`} className="w-full h-full object-cover" />
+                  <img src={img} alt={`${product.name} ${index}`} className="w-full h-full object-cover" referrerPolicy="no-referrer" loading="lazy" />
                 </button>
               ))}
             </div>

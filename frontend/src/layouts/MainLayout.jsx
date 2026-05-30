@@ -4,15 +4,7 @@ import Navbar from '../components/Navbar';
 const MainLayout = () => {
   return (
     <div className="flex flex-col min-h-screen bg-light font-sans text-gray-900">
-      <header className="bg-white shadow-sm sticky top-0 z-50 border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <Link to="/" className="font-extrabold text-2xl tracking-tight text-dark flex items-center">
-            <span className="w-8 h-8 bg-gray-900 text-white rounded flex items-center justify-center mr-2 text-xl">E</span>
-            COMMERCE
-          </Link>
-          <Navbar />
-        </div>
-      </header>
+      <Navbar />
 
       <main className="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
         <Outlet />

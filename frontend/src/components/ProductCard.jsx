@@ -4,6 +4,7 @@ import { useCart } from '../context/CartContext';
 import Toast from './Toast';
 import { useState } from 'react';
 import formatCurrency from '../utils/formatCurrency';
+import { optimizeUnsplashUrl } from '../utils/optimizeImage';
 
 const ProductCard = ({ product }) => {
   const { addToCart } = useCart();
@@ -38,10 +39,12 @@ const ProductCard = ({ product }) => {
       {/* Image Container */}
       <Link to={`/products/${product.id}`} className="block relative aspect-square overflow-hidden bg-gray-50">
         <img 
-          src={product.imageUrl || 'https://via.placeholder.com/400x400?text=Sản+phẩm+cao+cấp'} 
+          src={optimizeUnsplashUrl((product.imageUrls && product.imageUrls[0]) || product.imageUrl, 400)} 
           alt={product.name} 
           className={`w-full h-full object-cover transition-transform duration-700 ease-out ${isHovered ? 'scale-110' : 'scale-100'}`}
-          onError={(e) => { e.target.src = 'https://via.placeholder.com/400x400?text=Ảnh+lỗi'; }}
+          referrerPolicy="no-referrer"
+          loading="lazy"
+          onError={(e) => { if (!e.target.dataset.retry) { e.target.dataset.retry = '1'; e.target.src = 'https://placehold.co/400x400?text=Ảnh+lỗi'; } }}
         />
         
         {/* Overlays */}

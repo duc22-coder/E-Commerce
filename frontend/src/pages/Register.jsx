@@ -45,7 +45,7 @@ const Register = () => {
     <div className="min-h-[90vh] flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8 bg-slate-50">
       {toast && <Toast type={toast.type} message={toast.message} onClose={() => setToast(null)} />}
 
-      <div className="sm:mx-auto sm:w-full sm:max-w-md animate-in fade-in slide-in-from-top-8 duration-700">
+      <div className="sm:mx-auto sm:w-full sm:max-w-3xl animate-in fade-in slide-in-from-top-8 duration-700">
         <div className="flex justify-center mb-8">
           <div className="w-16 h-16 bg-blue-600 rounded-3xl flex items-center justify-center text-white shadow-2xl shadow-blue-600/30">
             <ShoppingBag className="w-8 h-8" />
@@ -62,7 +62,7 @@ const Register = () => {
         </p>
       </div>
 
-      <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-xl animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200">
+      <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-3xl animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200">
         <div className="bg-white py-10 px-8 shadow-2xl shadow-gray-200/50 rounded-[2.5rem] border border-gray-100">
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

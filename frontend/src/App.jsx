@@ -12,6 +12,12 @@ import ProductDetail from './pages/ProductDetail';
 import Profile from './pages/Profile';
 import ProtectedRoute from './components/ProtectedRoute';
 
+// Admin imports
+import AdminDashboard from './pages/admin/Dashboard';
+import ManageProducts from './pages/admin/ManageProducts';
+import ManageCategories from './pages/admin/ManageCategories';
+import ManageOrders from './pages/admin/ManageOrders';
+
 // Placeholder components for unimplemented pages
 const Placeholder = ({ title }) => (
   <div className="flex items-center justify-center min-h-[50vh]">
@@ -42,10 +48,10 @@ function App() {
       {/* Admin Routes */}
       <Route path="/admin" element={<ProtectedRoute adminOnly={true} />}>
         <Route element={<AdminLayout />}>
-          <Route index element={<Placeholder title="Admin Dashboard" />} />
-          <Route path="products" element={<Placeholder title="Manage Products" />} />
-          <Route path="categories" element={<Placeholder title="Manage Categories" />} />
-          <Route path="orders" element={<Placeholder title="Manage Orders" />} />
+          <Route index element={<AdminDashboard />} />
+          <Route path="products" element={<ManageProducts />} />
+          <Route path="categories" element={<ManageCategories />} />
+          <Route path="orders" element={<ManageOrders />} />
           <Route path="users" element={<Placeholder title="Manage Users" />} />
         </Route>
       </Route>

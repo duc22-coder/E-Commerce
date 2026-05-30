@@ -165,7 +165,7 @@ const Dashboard = () => {
           </div>
           
           <div className="p-4 bg-gray-50 rounded-2xl border border-gray-100 mt-6 text-center text-xs text-gray-400 font-bold">
-            Hệ thống quản trị LuuCode v1.0.0
+            Hệ thống quản trị E-SHOP v1.0.0
           </div>
         </div>
       </div>

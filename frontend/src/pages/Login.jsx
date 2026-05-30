@@ -121,7 +121,7 @@ const Login = () => {
         
         <div className="mt-8 text-center px-8">
           <p className="text-xs text-gray-400 font-medium leading-relaxed">
-            Bằng cách tiếp tục, bạn đồng ý với Điều khoản dịch vụ và Chính sách bảo mật của LUUCODE STORE.
+            Bằng cách tiếp tục, bạn đồng ý với Điều khoản dịch vụ và Chính sách bảo mật của E-SHOP.
           </p>
         </div>
       </div>

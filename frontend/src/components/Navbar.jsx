@@ -29,9 +29,19 @@ const Navbar = () => {
     navigate('/login');
   };
 
+  const handleNavLinkClick = (e, path) => {
+    if (path === '/products' && !isAuthenticated) {
+      e.preventDefault();
+      const confirmLogin = window.confirm("Bạn phải đăng nhập?");
+      if (confirmLogin) {
+        navigate('/login');
+      }
+    }
+  };
+
   const navLinks = [
     { name: 'Trang chủ', path: '/' },
-    { name: 'Sản phẩm', path: '/products' },
+    { name: 'Shop', path: '/products' },
   ];
 
   return (
@@ -44,7 +54,7 @@ const Navbar = () => {
               <ShoppingBag className="w-6 h-6" />
             </div>
             <span className="text-2xl font-black text-gray-900 tracking-tighter">
-              LUU<span className="text-blue-600">CODE</span>
+              E-<span className="text-blue-600">SHOP</span>
             </span>
           </Link>
 
@@ -54,11 +64,21 @@ const Navbar = () => {
               <Link 
                 key={link.name} 
                 to={link.path} 
+                onClick={(e) => handleNavLinkClick(e, link.path)}
                 className="text-sm font-bold text-gray-500 hover:text-blue-600 transition-colors uppercase tracking-widest"
               >
                 {link.name}
               </Link>
             ))}
+            {isAdmin && (
+              <Link 
+                to="/admin" 
+                className="flex items-center gap-2 text-sm font-bold text-blue-600 hover:text-blue-800 transition-colors uppercase tracking-widest"
+              >
+                <LayoutDashboard className="w-4 h-4" />
+                Trang quản trị
+              </Link>
+            )}
           </div>
 
           {/* Search Bar - Desktop */}
@@ -171,11 +191,24 @@ const Navbar = () => {
               key={link.name} 
               to={link.path} 
               className="block px-4 py-3 text-base font-bold text-gray-600 hover:bg-blue-50 hover:text-blue-600 rounded-xl transition-all"
-              onClick={() => setIsMenuOpen(false)}
+              onClick={(e) => {
+                setIsMenuOpen(false);
+                handleNavLinkClick(e, link.path);
+              }}
             >
               {link.name}
             </Link>
           ))}
+          {isAdmin && (
+            <Link 
+              to="/admin" 
+              className="flex items-center gap-2 px-4 py-3 text-base font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-xl transition-all"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <LayoutDashboard className="w-5 h-5" />
+              Trang quản trị
+            </Link>
+          )}
           {!isAuthenticated && (
             <div className="pt-4 mt-4 border-t border-gray-100">
               <Link 

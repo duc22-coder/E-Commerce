@@ -4,6 +4,7 @@ import formatCurrency from '../utils/formatCurrency';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { Package, Calendar, Tag, ChevronRight, ShoppingBag, Clock, CheckCircle, Truck, XCircle, Box } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { optimizeUnsplashUrl } from '../utils/optimizeImage';
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
@@ -13,7 +14,7 @@ const Orders = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await api.get('/orders');
+        const response = await api.get('/orders/my-orders');
         // Backend returns list of orders directly or in a content field
         setOrders(response.data.content || response.data || []);
       } catch (err) {
@@ -111,10 +112,22 @@ const Orders = () => {
 
                 <div className="space-y-4 mb-8">
                   {/* Order Items Preview */}
-                  {order.orderItems?.map((item, idx) => (
+                  {(order.items || order.orderItems)?.map((item, idx) => (
                     <div key={idx} className="flex items-center gap-4 group/item">
                       <div className="w-12 h-12 rounded-xl bg-gray-50 border border-gray-100 overflow-hidden flex-shrink-0">
-                        <img src={item.productImageUrl || 'https://via.placeholder.com/100'} alt={item.productName} className="w-full h-full object-cover" />
+                        <img 
+                          src={optimizeUnsplashUrl(item.productImageUrl, 150)} 
+                          alt={item.productName} 
+                          className="w-full h-full object-cover" 
+                          referrerPolicy="no-referrer" 
+                          loading="lazy" 
+                          onError={(e) => {
+                            if (!e.target.dataset.retry) {
+                              e.target.dataset.retry = '1';
+                              e.target.src = 'https://placehold.co/150x150?text=Ảnh+lỗi';
+                            }
+                          }}
+                        />
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-bold text-gray-800 truncate">{item.productName}</p>

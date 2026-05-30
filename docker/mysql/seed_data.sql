@@ -38,16 +38,16 @@ INSERT INTO products (name, description, price, stock_quantity, brand, category_
 
 -- 5. Insert Product Images
 INSERT INTO product_images (product_id, image_url, is_primary) VALUES
-(1, 'https://images.unsplash.com/photo-1696446701796-da61225697cc', 1),
-(2, 'https://images.unsplash.com/photo-1611186871348-b1ec696e5237', 1),
-(3, 'https://images.unsplash.com/photo-1618366712277-7070430238c0', 1),
-(4, 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab', 1),
-(5, 'https://images.unsplash.com/photo-1542272604-787c3835535d', 1),
-(6, 'https://images.unsplash.com/photo-1542291026-7eec264c27ff', 1),
-(7, 'https://images.unsplash.com/photo-1563861826100-9cb868fdbe1c', 1),
-(8, 'https://images.unsplash.com/photo-1602143399827-bd934344c5c1', 1),
-(9, 'https://images.unsplash.com/photo-1524592094714-0f0654e20314', 1),
-(10, 'https://images.unsplash.com/photo-1553062407-98eebcf4c9a1', 1);
+(1, 'https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=600&auto=format', 1),
+(2, 'https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=600&auto=format', 1),
+(3, 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&auto=format', 1),
+(4, 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600&auto=format', 1),
+(5, 'https://images.unsplash.com/photo-1542272604-787c3835535d?w=600&auto=format', 1),
+(6, 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&auto=format', 1),
+(7, 'https://images.unsplash.com/photo-1563861826100-9cb868fdbe1c?w=600&auto=format', 1),
+(8, 'https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=600&auto=format', 1),
+(9, 'https://images.unsplash.com/photo-1524592094714-0f0654e20314?w=600&auto=format', 1),
+(10, 'https://images.unsplash.com/photo-1622560480605-d83c853bc5c3?w=600&auto=format', 1);
 
 -- 6. Insert Product Sizes (for Clothing and Footwear)
 INSERT INTO product_sizes (product_id, size_name) VALUES

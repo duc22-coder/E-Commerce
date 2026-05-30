@@ -6,6 +6,7 @@ import Toast from '../components/Toast';
 import { useState } from 'react';
 import LoadingSpinner from '../components/LoadingSpinner';
 import formatCurrency from '../utils/formatCurrency';
+import { optimizeUnsplashUrl } from '../utils/optimizeImage';
 
 const Cart = () => {
   const { cartItems, updateQuantity, removeFromCart, getCartTotal, loading } = useCart();
@@ -93,9 +94,17 @@ const Cart = () => {
                   <div className="col-span-12 sm:col-span-6 flex items-center gap-4">
                     <div className="w-20 h-20 flex-shrink-0 bg-gray-50 rounded-xl overflow-hidden border border-gray-100">
                       <img 
-                        src={item.productImageUrl || 'https://via.placeholder.com/200x200?text=No+Image'} 
+                        src={optimizeUnsplashUrl(item.productImageUrl, 150)} 
                         alt={item.productName} 
                         className="w-full h-full object-cover" 
+                        referrerPolicy="no-referrer"
+                        loading="lazy"
+                        onError={(e) => {
+                          if (!e.target.dataset.retry) {
+                            e.target.dataset.retry = '1';
+                            e.target.src = 'https://placehold.co/150x150?text=Ảnh+lỗi';
+                          }
+                        }}
                       />
                     </div>
                     <div>

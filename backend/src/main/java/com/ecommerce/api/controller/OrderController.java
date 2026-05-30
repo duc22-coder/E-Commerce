@@ -19,11 +19,14 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping
-    public ResponseEntity<OrderDTO> placeOrder(
+    public ResponseEntity<java.util.Map<String, Object>> placeOrder(
             Authentication authentication,
-            @RequestParam String shippingAddress,
-            @RequestParam String paymentMethod) {
-        return new ResponseEntity<>(orderService.placeOrder(authentication.getName(), shippingAddress, paymentMethod), HttpStatus.CREATED);
+            @RequestBody com.ecommerce.api.dto.OrderRequest request) {
+        OrderDTO order = orderService.placeOrder(authentication.getName(), request.getShippingAddress(), request.getPaymentMethod());
+        java.util.Map<String, Object> response = new java.util.HashMap<>();
+        response.put("message", "Payment Successful");
+        response.put("order", order);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @GetMapping("/my-orders")

@@ -6,7 +6,7 @@
     "stockQuantity": 50,
     "brand": "Apple",
     "categoryId": 1,
-    "imageUrls": ["https://images.unsplash.com/photo-1696446701796-da61225697cc"],
+    "imageUrls": ["https://images.unsplash.com/photo-1695048133142-1a20484d2569"],
     "sizes": []
   },
   {
@@ -16,7 +16,7 @@
     "stockQuantity": 30,
     "brand": "Apple",
     "categoryId": 1,
-    "imageUrls": ["https://images.unsplash.com/photo-1611186871348-b1ec696e5237"],
+    "imageUrls": ["https://images.unsplash.com/photo-1541807084-5c52b6b3adef"],
     "sizes": []
   },
   {
@@ -26,7 +26,7 @@
     "stockQuantity": 100,
     "brand": "Sony",
     "categoryId": 1,
-    "imageUrls": ["https://images.unsplash.com/photo-1618366712277-7070430238c0"],
+    "imageUrls": ["https://images.unsplash.com/photo-1505740420928-5e560c06d30e"],
     "sizes": []
   },
   {

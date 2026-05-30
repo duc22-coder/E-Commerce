@@ -56,7 +56,7 @@ CREATE TABLE products (
 CREATE TABLE product_images (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     product_id BIGINT NOT NULL,
-    image_url VARCHAR(255) NOT NULL,
+    image_url VARCHAR(2048) NOT NULL,
     is_primary BOOLEAN DEFAULT FALSE,
     FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
 );

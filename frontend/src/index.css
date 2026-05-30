@@ -4,21 +4,57 @@
 
 @layer base {
   body {
-    @apply bg-slate-50 text-gray-900 antialiased font-sans selection:bg-blue-100 selection:text-blue-900;
+    background-color: #030712 !important; /* Premium deep dark gray */
+    color: #f8fafc !important; /* Clean soft white text */
+    @apply antialiased font-sans selection:bg-blue-600 selection:text-white;
+  }
+
+  /* Global Tailwind light class overrides for a perfect dark mode */
+  .bg-white {
+    background-color: #0f172a !important; /* Deep dark slate cards */
+  }
+
+  .bg-gray-50, .bg-light {
+    background-color: #1e293b !important; /* Secondary lighter slate */
+  }
+
+  .bg-slate-50 {
+    background-color: #030712 !important; /* Body background match */
+  }
+
+  .border-gray-100, .border-gray-50, .border-white\/20, .border-gray-200 {
+    border-color: #334155 !important; /* Subtle slate border */
+  }
+
+  .text-gray-900, .text-gray-800 {
+    color: #f8fafc !important; /* Primary text */
+  }
+
+  .text-gray-700, .text-gray-600 {
+    color: #cbd5e1 !important; /* Secondary text */
+  }
+
+  .text-gray-500, .text-gray-400 {
+    color: #94a3b8 !important; /* Muted slate text */
+  }
+
+  /* Shadow tuning for dark mode */
+  .shadow-sm, .shadow-md, .shadow-lg, .shadow-xl, .shadow-2xl {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.3) !important;
   }
 }
 
 @layer components {
   .btn-primary {
-    @apply bg-blue-600 text-white font-black py-4 px-10 rounded-2xl transition-all hover:bg-blue-700 hover:shadow-2xl hover:shadow-blue-600/20 active:scale-95 flex items-center justify-center gap-2;
+    @apply bg-blue-600 text-white font-black py-4 px-10 rounded-2xl transition-all hover:bg-blue-700 hover:shadow-2xl hover:shadow-blue-600/30 active:scale-95 flex items-center justify-center gap-2;
   }
   
   .glass-card {
-    @apply bg-white/80 backdrop-blur-2xl border border-white/20 shadow-2xl shadow-gray-200/50;
+    @apply bg-slate-900/80 backdrop-blur-2xl border border-slate-700 shadow-2xl;
   }
 
   .input-field {
-    @apply w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none focus:bg-white focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all font-medium;
+    @apply w-full px-5 py-4 bg-slate-800 border border-slate-700 rounded-2xl outline-none focus:bg-slate-900 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 text-white transition-all font-medium;
   }
 }
 

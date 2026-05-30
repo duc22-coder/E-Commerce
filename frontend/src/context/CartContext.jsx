@@ -78,7 +78,7 @@ export const CartProvider = ({ children }) => {
             id: Date.now(), // temporary ID
             productId: product.id,
             productName: product.name,
-            productImageUrl: product.imageUrl,
+            productImageUrl: (product.imageUrls && product.imageUrls[0]) || product.imageUrl,
             price: product.price,
             quantity: quantity,
             subtotal: quantity * product.price

@@ -6,6 +6,7 @@ import { ChevronLeft, CreditCard, Truck, CheckCircle, Copy, Timer, AlertCircle }
 import formatCurrency from '../utils/formatCurrency';
 import api from '../api/axios';
 import techcombankQr from '../assets/payment/techcombank-qr.png';
+import { optimizeUnsplashUrl } from '../utils/optimizeImage';
 
 const Checkout = () => {
   const { cartItems, getCartTotal, clearCart } = useCart();
@@ -229,7 +230,7 @@ const Checkout = () => {
                   <div className="flex flex-col md:flex-row gap-8 items-center">
                     <div className="w-full md:w-1/2 p-4 bg-gray-50 rounded-2xl border border-gray-100 relative group">
                       <img 
-                        src={`https://img.vietqr.io/image/TCB-2208200588-compact2.png?amount=${getCartTotal()}&addInfo=LUUCODE%20THANH%20TOAN&accountName=NGUYEN%20ANH%20DUC`} 
+                        src={`https://img.vietqr.io/image/TCB-2208200588-compact2.png?amount=${getCartTotal()}&addInfo=THANH%20TOAN%20DON%20HANG&accountName=NGUYEN%20ANH%20DUC`} 
                         alt="Techcombank QR" 
                         className="w-full rounded-xl shadow-lg" 
                       />
@@ -295,7 +296,19 @@ const Checkout = () => {
               {cartItems.map((item) => (
                 <div key={item.id} className="flex gap-4">
                   <div className="w-16 h-16 shrink-0 bg-gray-50 rounded-xl overflow-hidden border border-gray-100">
-                    <img src={item.productImageUrl} alt={item.productName} className="w-full h-full object-cover" />
+                    <img 
+                      src={optimizeUnsplashUrl(item.productImageUrl, 150)} 
+                      alt={item.productName} 
+                      className="w-full h-full object-cover" 
+                      referrerPolicy="no-referrer" 
+                      loading="lazy" 
+                      onError={(e) => {
+                        if (!e.target.dataset.retry) {
+                          e.target.dataset.retry = '1';
+                          e.target.src = 'https://placehold.co/150x150?text=Ảnh+lỗi';
+                        }
+                      }}
+                    />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-bold text-gray-900 truncate">{item.productName}</p>

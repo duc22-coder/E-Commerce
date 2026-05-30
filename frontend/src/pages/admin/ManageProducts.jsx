@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Package, Plus, Edit2, Trash2, X, Tag, ShoppingBag, FolderOpen, Save, RefreshCw } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { Package, Plus, Edit2, Trash2, X, Tag, ShoppingBag, FolderOpen, Save, RefreshCw, Upload, ImagePlus } from 'lucide-react';
 import api from '../../api/axios';
 import formatCurrency from '../../utils/formatCurrency';
 import Toast from '../../components/Toast';
@@ -22,6 +22,11 @@ const ManageProducts = () => {
     categoryId: '',
     imageUrls: ['']
   });
+
+  // Image upload states
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef(null);
 
   const fetchAllData = async () => {
     setLoading(true);
@@ -178,9 +183,11 @@ const ManageProducts = () => {
                     <td className="py-4 px-6">
                       <div className="w-12 h-12 rounded-xl bg-gray-50 overflow-hidden border border-gray-100 shrink-0">
                         <img 
-                          src={product.imageUrls && product.imageUrls.length > 0 ? product.imageUrls[0] : 'https://via.placeholder.com/150'} 
+                          src={product.imageUrls && product.imageUrls.length > 0 ? product.imageUrls[0] : 'https://placehold.co/150x150'} 
                           alt={product.name} 
                           className="w-full h-full object-cover" 
+                          referrerPolicy="no-referrer"
+                          loading="lazy"
                         />
                       </div>
                     </td>
@@ -304,7 +311,7 @@ const ManageProducts = () => {
                       type="button" onClick={handleAddImageUrl}
                       className="text-xs font-black text-blue-600 hover:text-blue-800"
                     >
-                      + Thêm ảnh
+                      + Thêm URL
                     </button>
                   </div>
                   
@@ -325,6 +332,66 @@ const ManageProducts = () => {
                       )}
                     </div>
                   ))}
+
+                  {/* File Upload Section */}
+                  <div className="mt-4 p-5 bg-blue-50/60 rounded-2xl border border-blue-100">
+                    <p className="text-xs font-black text-blue-600 uppercase tracking-widest mb-3 flex items-center gap-1.5">
+                      <ImagePlus className="w-4 h-4" /> Tải ảnh từ máy tính
+                    </p>
+                    <div className="flex gap-3">
+                      <div
+                        onClick={() => fileInputRef.current?.click()}
+                        className="flex-1 flex items-center gap-3 bg-white border-2 border-dashed border-blue-200 rounded-2xl py-3 px-4 cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition-all group"
+                      >
+                        <Upload className="w-4 h-4 text-blue-400 group-hover:text-blue-600 transition-colors shrink-0" />
+                        <span className="text-sm font-bold text-gray-500 group-hover:text-blue-600 transition-colors truncate">
+                          {selectedFile ? selectedFile.name : 'Chọn file ảnh (JPG, PNG, WEBP)...'}
+                        </span>
+                      </div>
+                      <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => setSelectedFile(e.target.files[0] || null)}
+                      />
+                      <button
+                        type="button"
+                        disabled={!selectedFile || uploading}
+                        onClick={async () => {
+                          if (!selectedFile) return;
+                          setUploading(true);
+                          try {
+                            const fd = new FormData();
+                            fd.append('file', selectedFile);
+                            const res = await api.post('/upload', fd, {
+                              headers: { 'Content-Type': 'multipart/form-data' }
+                            });
+                            const uploadedUrl = res.data?.url || res.data;
+                            const fullUrl = uploadedUrl.startsWith('http')
+                              ? uploadedUrl
+                              : `http://localhost:8080${uploadedUrl}`;
+                            setFormData(prev => ({ ...prev, imageUrls: [...prev.imageUrls.filter(u => u.trim() !== ''), fullUrl] }));
+                            setSelectedFile(null);
+                            if (fileInputRef.current) fileInputRef.current.value = '';
+                            setToast({ type: 'success', message: 'Tải ảnh lên thành công!' });
+                          } catch (err) {
+                            console.error('Upload failed:', err);
+                            setToast({ type: 'error', message: 'Tải ảnh thất bại. Kiểm tra lại server.' });
+                          } finally {
+                            setUploading(false);
+                          }
+                        }}
+                        className="shrink-0 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-200 disabled:text-gray-400 text-white font-black py-3 px-5 rounded-2xl text-xs flex items-center gap-2 transition-all active:scale-95 shadow-lg shadow-blue-600/20"
+                      >
+                        {uploading ? (
+                          <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Đang tải...</>
+                        ) : (
+                          <><Upload className="w-4 h-4" /> Upload</>
+                        )}
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
 
