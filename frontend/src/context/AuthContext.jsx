@@ -88,6 +88,7 @@ export const AuthProvider = ({ children }) => {
   // Memoize context value to prevent unnecessary re-renders
   const value = useMemo(() => ({
     user,
+    setUser,
     token,
     loading,
     login,
