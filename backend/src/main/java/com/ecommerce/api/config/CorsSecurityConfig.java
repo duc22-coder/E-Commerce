@@ -16,9 +16,9 @@ public class CorsSecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         // Allow both dev (Vite) and production origins
-        config.setAllowedOrigins(List.of(
-                "http://localhost:5173",
-                "http://localhost:3000"));
+        config.setAllowedOriginPatterns(List.of(
+                "http://localhost:*",
+                "https://*.vercel.app"));
 
         // All HTTP methods including PATCH
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
