@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { ShoppingCart, User, LogOut, Menu, X, Search, Package, ShoppingBag, LayoutDashboard } from 'lucide-react';
+import { ShoppingCart, User, LogOut, Menu, X, Search, Package, ShoppingBag, LayoutDashboard, Sparkles } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 
@@ -9,46 +9,37 @@ const Navbar = () => {
   const { cartItems } = useCart();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [searchVal, setSearchVal] = useState('');
   const profileRef = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Ripple effect handler
+  // Ripple effect
   const createRipple = useCallback((e) => {
-    const button = e.currentTarget;
-    const rect = button.getBoundingClientRect();
+    const el = e.currentTarget;
+    const rect = el.getBoundingClientRect();
     const ripple = document.createElement('span');
     const size = Math.max(rect.width, rect.height);
-    const x = e.clientX - rect.left - size / 2;
-    const y = e.clientY - rect.top - size / 2;
     ripple.style.cssText = `
-      position: absolute;
-      width: ${size}px;
-      height: ${size}px;
-      left: ${x}px;
-      top: ${y}px;
-      background: rgba(59, 130, 246, 0.25);
-      border-radius: 50%;
-      transform: scale(0);
-      animation: navRipple 0.55s ease-out forwards;
-      pointer-events: none;
-      z-index: 0;
+      position:absolute;width:${size}px;height:${size}px;
+      left:${e.clientX - rect.left - size / 2}px;
+      top:${e.clientY - rect.top - size / 2}px;
+      background:rgba(99,102,241,0.2);border-radius:50%;
+      transform:scale(0);animation:navRipple 0.55s ease-out forwards;
+      pointer-events:none;z-index:0;
     `;
-    button.style.overflow = 'hidden';
-    button.style.position = 'relative';
-    button.appendChild(ripple);
+    el.appendChild(ripple);
     setTimeout(() => ripple.remove(), 600);
   }, []);
 
-  // Handle click outside to close profile dropdown
+  // Close dropdown on outside click
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (profileRef.current && !profileRef.current.contains(event.target)) {
+    const fn = (e) => {
+      if (profileRef.current && !profileRef.current.contains(e.target))
         setIsProfileOpen(false);
-      }
     };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener('mousedown', fn);
+    return () => document.removeEventListener('mousedown', fn);
   }, []);
 
   const handleLogout = () => {
@@ -57,13 +48,11 @@ const Navbar = () => {
     navigate('/login');
   };
 
+  // Redirect to login if not authenticated when clicking Shop
   const handleNavLinkClick = (e, path) => {
     if (path === '/products' && !isAuthenticated) {
       e.preventDefault();
-      const confirmLogin = window.confirm("Bạn phải đăng nhập?");
-      if (confirmLogin) {
-        navigate('/login');
-      }
+      navigate('/login');
     }
   };
 
@@ -78,133 +67,158 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-gray-100 shadow-sm">
+    <nav className="sticky top-0 z-50 border-b border-white/[0.06]"
+      style={{ background: 'rgba(3,7,18,0.75)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)' }}>
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-20">
-          {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 group">
-            <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-600/30 group-hover:rotate-12 transition-transform duration-300">
-              <ShoppingBag className="w-6 h-6" />
+        <div className="flex justify-between items-center h-[68px]">
+
+          {/* ── Logo ── */}
+          <Link to="/" className="flex items-center gap-2.5 group flex-shrink-0">
+            <div className="relative w-9 h-9">
+              <div className="absolute inset-0 bg-blue-600 rounded-xl blur-md opacity-60 group-hover:opacity-90 transition-opacity duration-300" />
+              <div className="relative w-9 h-9 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center text-white shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
+                <ShoppingBag className="w-5 h-5" />
+              </div>
             </div>
-            <span className="text-2xl font-black text-gray-900 tracking-tighter">
-              E-<span className="text-blue-600">SHOP</span>
+            <span className="text-xl font-black tracking-tight text-white">
+              E-<span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400">SHOP</span>
             </span>
           </Link>
 
-          {/* Desktop Links */}
-          <div className="hidden md:flex items-center gap-8">
+          {/* ── Desktop Nav Links ── */}
+          <div className="hidden md:flex items-center gap-1">
             {navLinks.map((link) => {
               const active = isActiveLink(link.path);
               return (
-                <Link 
-                  key={link.name} 
-                  to={link.path} 
+                <Link
+                  key={link.name}
+                  to={link.path}
                   onClick={(e) => { createRipple(e); handleNavLinkClick(e, link.path); }}
-                  className={`nav-link-item relative text-sm font-bold uppercase tracking-widest transition-all duration-300 select-none
-                    ${active 
-                      ? 'text-blue-500 nav-link-active' 
-                      : 'text-gray-400 hover:text-blue-400 hover:scale-105'}
+                  className={`nav-link-item group relative px-4 py-2 rounded-xl text-[11px] font-black uppercase tracking-[0.15em] transition-all duration-300 overflow-hidden select-none
+                    ${active
+                      ? 'text-white'
+                      : 'text-slate-400 hover:text-white'}
                   `}
                 >
+                  {/* Hover / Active background pill */}
+                  <span className={`absolute inset-0 rounded-xl transition-all duration-300
+                    ${active
+                      ? 'bg-white/10 border border-white/10'
+                      : 'bg-transparent group-hover:bg-white/5 border border-transparent group-hover:border-white/[0.08]'}
+                  `} />
+
+                  {/* Shimmer sweep on hover */}
+                  <span className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                    style={{ background: 'linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.07) 50%, transparent 60%)', backgroundSize: '200% 100%', animation: 'shimmerSweep 0.8s ease forwards' }} />
+
                   <span className="relative z-10">{link.name}</span>
-                  {/* Active underline */}
-                  <span className={`absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-blue-500 to-indigo-400 rounded-full transition-all duration-300 ${active ? 'w-full' : 'w-0 group-hover:w-full'}`} />
+
+                  {/* Active underline dot */}
+                  {active && (
+                    <span className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-blue-400 shadow-[0_0_6px_2px_rgba(96,165,250,0.7)]" />
+                  )}
                 </Link>
               );
             })}
+
             {isAdmin && (
-              <Link 
+              <Link
                 to="/admin"
                 onClick={createRipple}
-                className={`nav-link-item relative flex items-center gap-2 text-sm font-bold uppercase tracking-widest transition-all duration-300 select-none
-                  ${isActiveLink('/admin') 
-                    ? 'text-blue-500 nav-link-active' 
-                    : 'text-blue-400 hover:text-blue-300 hover:scale-105'}
+                className={`nav-link-item group relative px-4 py-2 rounded-xl text-[11px] font-black uppercase tracking-[0.15em] transition-all duration-300 overflow-hidden select-none
+                  ${isActiveLink('/admin') ? 'text-indigo-300' : 'text-indigo-400 hover:text-indigo-200'}
                 `}
               >
-                <LayoutDashboard className="w-4 h-4" />
-                <span className="relative z-10">Trang quản trị</span>
-                <span className={`absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-blue-500 to-indigo-400 rounded-full transition-all duration-300 ${isActiveLink('/admin') ? 'w-full' : 'w-0'}`} />
+                <span className={`absolute inset-0 rounded-xl transition-all duration-300
+                  ${isActiveLink('/admin') ? 'bg-indigo-500/10 border border-indigo-500/20' : 'group-hover:bg-indigo-500/5 border border-transparent group-hover:border-indigo-500/10'}
+                `} />
+                <span className="relative z-10 flex items-center gap-1.5">
+                  <LayoutDashboard className="w-3.5 h-3.5" />
+                  Quản trị
+                </span>
               </Link>
             )}
           </div>
 
-          {/* Search Bar - Desktop */}
-          <div className="hidden lg:flex flex-1 max-w-sm mx-8">
+          {/* ── Search ── */}
+          <div className="hidden lg:flex flex-1 max-w-xs mx-6">
             <div className="relative w-full group">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-blue-600 transition-colors" />
-              <input 
-                type="text" 
-                placeholder="Tìm kiếm sản phẩm..." 
-                className="w-full bg-gray-50 border border-gray-100 rounded-2xl py-2.5 pl-11 pr-4 text-sm font-medium focus:bg-white focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all"
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-500 group-focus-within:text-blue-400 transition-colors duration-200" />
+              <input
+                type="text"
+                value={searchVal}
+                onChange={(e) => setSearchVal(e.target.value)}
+                placeholder="Tìm kiếm..."
                 onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    navigate(`/products?search=${e.target.value}`);
+                  if (e.key === 'Enter' && searchVal.trim()) {
+                    navigate(`/products?search=${searchVal.trim()}`);
+                    setSearchVal('');
                   }
                 }}
+                className="w-full rounded-xl py-2 pl-10 pr-4 text-sm font-medium text-slate-300 placeholder-slate-600 outline-none transition-all duration-200
+                  bg-white/[0.05] border border-white/[0.07]
+                  focus:bg-white/[0.08] focus:border-blue-500/40 focus:ring-2 focus:ring-blue-500/10"
               />
             </div>
           </div>
 
-          {/* Icons & Actions */}
-          <div className="flex items-center gap-4">
-            <Link to="/cart" className="relative w-10 h-10 flex items-center justify-center text-gray-500 hover:bg-gray-50 rounded-full transition-all group">
-              <ShoppingCart className="w-5 h-5" />
+          {/* ── Right Actions ── */}
+          <div className="flex items-center gap-2">
+
+            {/* Cart */}
+            <Link
+              to="/cart"
+              className="relative w-9 h-9 flex items-center justify-center text-slate-400 hover:text-white rounded-xl hover:bg-white/[0.07] transition-all duration-200 group"
+            >
+              <ShoppingCart className="w-[18px] h-[18px]" />
               {cartItems.length > 0 && (
-                <span className="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center shadow-lg shadow-red-600/30 group-hover:scale-110 transition-transform">
+                <span className="absolute -top-0.5 -right-0.5 bg-gradient-to-br from-red-500 to-rose-600 text-white text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center shadow-lg shadow-red-500/40 group-hover:scale-110 transition-transform">
                   {cartItems.length}
                 </span>
               )}
             </Link>
 
             {isAuthenticated ? (
+              /* ── Profile Dropdown ── */
               <div className="relative" ref={profileRef}>
-                <button 
+                <button
                   onClick={() => setIsProfileOpen(!isProfileOpen)}
-                  className="flex items-center gap-2 p-1 pr-3 hover:bg-gray-50 rounded-full transition-all border border-transparent hover:border-gray-100"
+                  className="flex items-center gap-2 pl-1 pr-3 py-1 rounded-full hover:bg-white/[0.07] transition-all duration-200 border border-transparent hover:border-white/10"
                 >
-                  <div className="w-9 h-9 bg-gradient-to-tr from-blue-600 to-indigo-600 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-md">
+                  <div className="w-7 h-7 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-black text-xs shadow-md shadow-indigo-500/30">
                     {user?.firstName?.charAt(0).toUpperCase() || 'U'}
                   </div>
-                  <span className="hidden sm:inline text-sm font-bold text-gray-700 truncate max-w-[100px]">
+                  <span className="hidden sm:inline text-sm font-bold text-slate-300 truncate max-w-[90px]">
                     {user?.firstName}
                   </span>
                 </button>
 
                 {isProfileOpen && (
-                  <div className="absolute right-0 mt-3 w-56 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-300">
-                    <div className="p-4 bg-gray-50 border-b border-gray-100">
-                      <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Tài khoản</p>
-                      <p className="text-sm font-black text-gray-900 truncate">{user?.firstName} {user?.lastName}</p>
+                  <div className="absolute right-0 mt-2 w-52 rounded-2xl overflow-hidden shadow-2xl border border-white/[0.08] animate-in fade-in slide-in-from-top-2 duration-200"
+                    style={{ background: 'rgba(15,23,42,0.95)', backdropFilter: 'blur(20px)' }}>
+                    <div className="px-4 py-3 border-b border-white/[0.06]">
+                      <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Tài khoản</p>
+                      <p className="text-sm font-black text-white mt-0.5 truncate">{user?.firstName} {user?.lastName}</p>
                     </div>
-                    <div className="p-2">
+                    <div className="p-2 space-y-0.5">
                       {isAdmin && (
-                        <Link 
-                          to="/admin" 
-                          onClick={() => setIsProfileOpen(false)}
-                          className="flex items-center gap-3 px-3 py-2 text-sm font-bold text-blue-600 hover:bg-blue-50 rounded-xl transition-all"
-                        >
+                        <Link to="/admin" onClick={() => setIsProfileOpen(false)}
+                          className="flex items-center gap-2.5 px-3 py-2 text-sm font-semibold text-indigo-400 hover:bg-indigo-500/10 rounded-xl transition-all">
                           <LayoutDashboard className="w-4 h-4" /> Trang quản trị
                         </Link>
                       )}
-                      <Link 
-                        to="/profile" 
-                        onClick={() => setIsProfileOpen(false)}
-                        className="flex items-center gap-3 px-3 py-2 text-sm font-bold text-gray-600 hover:bg-blue-50 hover:text-blue-600 rounded-xl transition-all"
-                      >
+                      <Link to="/profile" onClick={() => setIsProfileOpen(false)}
+                        className="flex items-center gap-2.5 px-3 py-2 text-sm font-semibold text-slate-300 hover:bg-white/[0.06] hover:text-white rounded-xl transition-all">
                         <User className="w-4 h-4" /> Thông tin cá nhân
                       </Link>
-                      <Link 
-                        to="/orders" 
-                        onClick={() => setIsProfileOpen(false)}
-                        className="flex items-center gap-3 px-3 py-2 text-sm font-bold text-gray-600 hover:bg-blue-50 hover:text-blue-600 rounded-xl transition-all"
-                      >
+                      <Link to="/orders" onClick={() => setIsProfileOpen(false)}
+                        className="flex items-center gap-2.5 px-3 py-2 text-sm font-semibold text-slate-300 hover:bg-white/[0.06] hover:text-white rounded-xl transition-all">
                         <Package className="w-4 h-4" /> Lịch sử đơn hàng
                       </Link>
-                      <button 
-                        onClick={handleLogout}
-                        className="w-full flex items-center gap-3 px-3 py-2 text-sm font-bold text-red-600 hover:bg-red-50 rounded-xl transition-all"
-                      >
+                      <div className="my-1 border-t border-white/[0.06]" />
+                      <button onClick={handleLogout}
+                        className="w-full flex items-center gap-2.5 px-3 py-2 text-sm font-semibold text-red-400 hover:bg-red-500/10 rounded-xl transition-all">
                         <LogOut className="w-4 h-4" /> Đăng xuất
                       </button>
                     </div>
@@ -212,71 +226,75 @@ const Navbar = () => {
                 )}
               </div>
             ) : (
-              <Link 
-                to="/login" 
-                className="bg-blue-600 hover:bg-blue-700 text-white text-xs font-black px-6 py-2.5 rounded-xl transition-all shadow-lg shadow-blue-600/20 active:scale-95 uppercase tracking-widest"
+              /* ── Login Button (pre-login, main CTA) ── */
+              <Link
+                to="/login"
+                className="login-glow-btn relative group flex items-center gap-1.5 px-5 py-2 rounded-xl text-[11px] font-black uppercase tracking-[0.12em] text-white overflow-hidden transition-all duration-300 active:scale-95 select-none"
               >
-                Đăng nhập
+                {/* Gradient base */}
+                <span className="absolute inset-0 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl transition-all duration-300 group-hover:from-blue-500 group-hover:to-indigo-500" />
+                {/* Glow halo */}
+                <span className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                  style={{ boxShadow: '0 0 20px 4px rgba(99,102,241,0.45)' }} />
+                {/* Shine sweep */}
+                <span className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100"
+                  style={{ background: 'linear-gradient(105deg,transparent 30%,rgba(255,255,255,0.15) 50%,transparent 70%)', animation: 'shimmerSweep 0.7s ease forwards' }} />
+                <Sparkles className="relative z-10 w-3 h-3 opacity-80" />
+                <span className="relative z-10">Đăng nhập</span>
               </Link>
             )}
 
-            {/* Mobile Menu Button */}
-            <button 
+            {/* Mobile hamburger */}
+            <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="md:hidden w-10 h-10 flex items-center justify-center text-gray-500 hover:bg-gray-50 rounded-full transition-all"
+              className="md:hidden w-9 h-9 flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/[0.07] rounded-xl transition-all"
             >
-              {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* ── Mobile Menu ── */}
       {isMenuOpen && (
-        <div className="md:hidden bg-white border-t border-gray-100 p-4 space-y-1 animate-in slide-in-from-top duration-300">
+        <div className="md:hidden border-t border-white/[0.06] p-3 space-y-1 animate-in slide-in-from-top duration-200"
+          style={{ background: 'rgba(3,7,18,0.95)', backdropFilter: 'blur(24px)' }}>
           {navLinks.map((link) => {
             const active = isActiveLink(link.path);
             return (
-              <Link 
-                key={link.name} 
-                to={link.path} 
-                className={`mobile-nav-item flex items-center gap-3 px-4 py-3 text-base font-bold rounded-xl transition-all duration-200 relative overflow-hidden
-                  ${active 
-                    ? 'bg-blue-600/10 text-blue-400 border-l-2 border-blue-500' 
-                    : 'text-gray-400 hover:bg-slate-800 hover:text-blue-400'}
+              <Link
+                key={link.name}
+                to={link.path}
+                className={`mobile-nav-item flex items-center gap-3 px-4 py-3 text-sm font-bold rounded-xl transition-all duration-200 relative overflow-hidden
+                  ${active
+                    ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20'
+                    : 'text-slate-400 hover:bg-white/[0.05] hover:text-white border border-transparent'}
                 `}
-                onClick={(e) => {
-                  createRipple(e);
-                  setIsMenuOpen(false);
-                  handleNavLinkClick(e, link.path);
-                }}
+                onClick={(e) => { createRipple(e); setIsMenuOpen(false); handleNavLinkClick(e, link.path); }}
               >
-                {active && <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse flex-shrink-0" />}
+                {active && <span className="w-1.5 h-1.5 rounded-full bg-blue-400 flex-shrink-0 shadow-[0_0_6px_rgba(96,165,250,0.8)]" />}
                 {link.name}
               </Link>
             );
           })}
           {isAdmin && (
-            <Link 
-              to="/admin" 
-              className={`mobile-nav-item flex items-center gap-3 px-4 py-3 text-base font-bold rounded-xl transition-all duration-200 relative overflow-hidden
-                ${isActiveLink('/admin')
-                  ? 'bg-blue-600/10 text-blue-400 border-l-2 border-blue-500'
-                  : 'text-blue-400 hover:bg-blue-600/10'}
-              `}
+            <Link
+              to="/admin"
+              className="mobile-nav-item flex items-center gap-3 px-4 py-3 text-sm font-bold text-indigo-400 hover:bg-indigo-500/10 rounded-xl transition-all border border-transparent hover:border-indigo-500/20"
               onClick={(e) => { createRipple(e); setIsMenuOpen(false); }}
             >
-              <LayoutDashboard className="w-5 h-5 flex-shrink-0" />
+              <LayoutDashboard className="w-4 h-4 flex-shrink-0" />
               Trang quản trị
             </Link>
           )}
           {!isAuthenticated && (
-            <div className="pt-4 mt-4 border-t border-gray-100">
-              <Link 
-                to="/login" 
-                className="block w-full bg-blue-600 text-white text-center py-3 rounded-xl font-bold shadow-lg active:scale-95 transition-transform"
+            <div className="pt-2 mt-1 border-t border-white/[0.06]">
+              <Link
+                to="/login"
+                className="flex items-center justify-center gap-2 w-full py-3 rounded-xl font-black text-sm text-white bg-gradient-to-r from-blue-600 to-indigo-600 active:scale-95 transition-transform shadow-lg shadow-indigo-500/20"
                 onClick={() => setIsMenuOpen(false)}
               >
+                <Sparkles className="w-4 h-4" />
                 Đăng nhập
               </Link>
             </div>

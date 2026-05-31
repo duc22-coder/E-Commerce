@@ -48,7 +48,7 @@ cd frontend && npm install && npm run dev
 | Vai trò | Email | Password |
 |---|---|---|
 | Admin | `admin@ecommerce.com` | `admin123` |
-| User | `user@ecommerce.com` | `password123` |
+| User | `user@ecommerce.com` | `user123` |
 
 ---
 
@@ -94,4 +94,3 @@ cd frontend && npm install && npm run dev
 | **Không cần đăng nhập** | `GET /api/products/**`, `GET /api/categories/**`, `/api/auth/**` |
 
 > 💡 "Không cần đăng nhập" không phải tài khoản — đây là các route được `.permitAll()` trong `SecurityConfig`, ai cũng gọi được mà không cần JWT.
-  
