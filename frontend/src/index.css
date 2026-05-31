@@ -101,6 +101,89 @@
   100% { background-position: -200% 0; }
 }
 
+/* ===== Nav Link Click Effects ===== */
+@keyframes navRipple {
+  0%   { transform: scale(0); opacity: 1; }
+  100% { transform: scale(4); opacity: 0; }
+}
+
+@keyframes navActiveGlow {
+  0%, 100% { text-shadow: 0 0 8px rgba(59, 130, 246, 0.4); }
+  50%       { text-shadow: 0 0 16px rgba(99, 102, 241, 0.7); }
+}
+
+@keyframes underlineSlideIn {
+  from { width: 0; opacity: 0; }
+  to   { width: 100%; opacity: 1; }
+}
+
+/* Desktop nav link */
+.nav-link-item {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 6px;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+.nav-link-item:hover {
+  transform: translateY(-1px) scale(1.05);
+}
+.nav-link-item:active {
+  transform: scale(0.96);
+}
+.nav-link-active {
+  animation: navActiveGlow 2.5s ease-in-out infinite;
+}
+
+/* Mobile nav item */
+.mobile-nav-item {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.2s ease;
+}
+.mobile-nav-item:active {
+  transform: scale(0.97);
+}
+
+/* Admin sidebar nav link */
+.admin-nav-link {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+.admin-nav-link::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(59, 130, 246, 0);
+  transition: background 0.2s ease;
+  border-radius: inherit;
+}
+.admin-nav-link:hover::before {
+  background: rgba(59, 130, 246, 0.06);
+}
+.admin-nav-link:active {
+  transform: scale(0.97);
+}
+
+@keyframes adminRipple {
+  0%   { transform: scale(0); opacity: 0.8; }
+  100% { transform: scale(5); opacity: 0; }
+}
+
+@keyframes sidebarSlideIn {
+  from { opacity: 0; transform: translateX(-6px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.admin-nav-animate {
+  animation: sidebarSlideIn 0.25s ease forwards;
+}
+
 /* Stretched Image Fix Utilities */
 .img-fix {
   @apply object-cover object-center w-full h-full;

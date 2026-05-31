@@ -1,10 +1,36 @@
-import { Outlet, Link, useLocation } from 'react-router-dom';
+import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Package, Users, Tag, Grid, LayoutDashboard, LogOut } from 'lucide-react';
 
 const AdminLayout = () => {
   const { logout, user } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
+
+  // Ripple effect for sidebar nav items
+  const createSidebarRipple = (e) => {
+    const el = e.currentTarget;
+    const rect = el.getBoundingClientRect();
+    const ripple = document.createElement('span');
+    const size = Math.max(rect.width, rect.height);
+    const x = e.clientX - rect.left - size / 2;
+    const y = e.clientY - rect.top - size / 2;
+    ripple.style.cssText = `
+      position: absolute;
+      width: ${size}px;
+      height: ${size}px;
+      left: ${x}px;
+      top: ${y}px;
+      background: rgba(99, 102, 241, 0.3);
+      border-radius: 50%;
+      transform: scale(0);
+      animation: adminRipple 0.5s ease-out forwards;
+      pointer-events: none;
+      z-index: 0;
+    `;
+    el.appendChild(ripple);
+    setTimeout(() => ripple.remove(), 550);
+  };
 
   const navItems = [
     { name: 'Dashboard', path: '/admin', icon: LayoutDashboard },
@@ -32,32 +58,41 @@ const AdminLayout = () => {
           </Link>
         </div>
         <nav className="flex-grow py-6 px-3 space-y-1">
-          {navItems.map((item) => {
+          {navItems.map((item, index) => {
             const Icon = item.icon;
             const active = isActive(item.path);
             return (
               <Link
                 key={item.name}
                 to={item.path}
-                className={`flex items-center px-3 py-2.5 rounded-md text-sm font-medium transition-colors ${
+                onClick={createSidebarRipple}
+                style={{ animationDelay: `${index * 50}ms` }}
+                className={`admin-nav-link admin-nav-animate flex items-center px-3 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 relative overflow-hidden ${
                   active 
-                    ? 'bg-primary-600 text-white' 
-                    : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+                    ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30 scale-[1.02]' 
+                    : 'text-gray-300 hover:bg-gray-700/60 hover:text-white hover:translate-x-1'
                 }`}
               >
-                <Icon className={`mr-3 flex-shrink-0 h-5 w-5 ${active ? 'text-white' : 'text-gray-400'}`} />
-                {item.name}
+                {/* Active left accent bar */}
+                {active && (
+                  <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-white/60 rounded-r-full" />
+                )}
+                <Icon className={`mr-3 flex-shrink-0 h-5 w-5 transition-transform duration-200 ${active ? 'text-white scale-110' : 'text-gray-400 group-hover:scale-110'}`} />
+                <span className="relative z-10">{item.name}</span>
+                {active && (
+                  <span className="ml-auto w-1.5 h-1.5 rounded-full bg-white/80 animate-pulse" />
+                )}
               </Link>
             );
           })}
         </nav>
         <div className="p-4 border-t border-gray-800">
           <button 
-            onClick={logout}
-            className="flex items-center w-full px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:bg-gray-800 hover:text-white transition-colors"
+            onClick={(e) => { createSidebarRipple(e); logout(); }}
+            className="admin-nav-link flex items-center w-full px-3 py-2.5 rounded-lg text-sm font-semibold text-gray-300 hover:bg-red-900/40 hover:text-red-300 transition-all duration-200 relative overflow-hidden group"
           >
-            <LogOut className="mr-3 flex-shrink-0 h-5 w-5 text-gray-400" />
-            Logout
+            <LogOut className="mr-3 flex-shrink-0 h-5 w-5 text-gray-400 group-hover:text-red-400 transition-colors" />
+            <span className="relative z-10">Logout</span>
           </button>
         </div>
       </aside>

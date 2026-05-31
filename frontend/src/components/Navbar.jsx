@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useState, useRef, useEffect, useCallback } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { ShoppingCart, User, LogOut, Menu, X, Search, Package, ShoppingBag, LayoutDashboard } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
@@ -11,6 +11,34 @@ const Navbar = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const profileRef = useRef(null);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Ripple effect handler
+  const createRipple = useCallback((e) => {
+    const button = e.currentTarget;
+    const rect = button.getBoundingClientRect();
+    const ripple = document.createElement('span');
+    const size = Math.max(rect.width, rect.height);
+    const x = e.clientX - rect.left - size / 2;
+    const y = e.clientY - rect.top - size / 2;
+    ripple.style.cssText = `
+      position: absolute;
+      width: ${size}px;
+      height: ${size}px;
+      left: ${x}px;
+      top: ${y}px;
+      background: rgba(59, 130, 246, 0.25);
+      border-radius: 50%;
+      transform: scale(0);
+      animation: navRipple 0.55s ease-out forwards;
+      pointer-events: none;
+      z-index: 0;
+    `;
+    button.style.overflow = 'hidden';
+    button.style.position = 'relative';
+    button.appendChild(ripple);
+    setTimeout(() => ripple.remove(), 600);
+  }, []);
 
   // Handle click outside to close profile dropdown
   useEffect(() => {
@@ -44,6 +72,11 @@ const Navbar = () => {
     { name: 'Shop', path: '/products' },
   ];
 
+  const isActiveLink = (path) => {
+    if (path === '/') return location.pathname === '/';
+    return location.pathname.startsWith(path);
+  };
+
   return (
     <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-gray-100 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -60,23 +93,38 @@ const Navbar = () => {
 
           {/* Desktop Links */}
           <div className="hidden md:flex items-center gap-8">
-            {navLinks.map((link) => (
-              <Link 
-                key={link.name} 
-                to={link.path} 
-                onClick={(e) => handleNavLinkClick(e, link.path)}
-                className="text-sm font-bold text-gray-500 hover:text-blue-600 transition-colors uppercase tracking-widest"
-              >
-                {link.name}
-              </Link>
-            ))}
+            {navLinks.map((link) => {
+              const active = isActiveLink(link.path);
+              return (
+                <Link 
+                  key={link.name} 
+                  to={link.path} 
+                  onClick={(e) => { createRipple(e); handleNavLinkClick(e, link.path); }}
+                  className={`nav-link-item relative text-sm font-bold uppercase tracking-widest transition-all duration-300 select-none
+                    ${active 
+                      ? 'text-blue-500 nav-link-active' 
+                      : 'text-gray-400 hover:text-blue-400 hover:scale-105'}
+                  `}
+                >
+                  <span className="relative z-10">{link.name}</span>
+                  {/* Active underline */}
+                  <span className={`absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-blue-500 to-indigo-400 rounded-full transition-all duration-300 ${active ? 'w-full' : 'w-0 group-hover:w-full'}`} />
+                </Link>
+              );
+            })}
             {isAdmin && (
               <Link 
-                to="/admin" 
-                className="flex items-center gap-2 text-sm font-bold text-blue-600 hover:text-blue-800 transition-colors uppercase tracking-widest"
+                to="/admin"
+                onClick={createRipple}
+                className={`nav-link-item relative flex items-center gap-2 text-sm font-bold uppercase tracking-widest transition-all duration-300 select-none
+                  ${isActiveLink('/admin') 
+                    ? 'text-blue-500 nav-link-active' 
+                    : 'text-blue-400 hover:text-blue-300 hover:scale-105'}
+                `}
               >
                 <LayoutDashboard className="w-4 h-4" />
-                Trang quản trị
+                <span className="relative z-10">Trang quản trị</span>
+                <span className={`absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-blue-500 to-indigo-400 rounded-full transition-all duration-300 ${isActiveLink('/admin') ? 'w-full' : 'w-0'}`} />
               </Link>
             )}
           </div>
@@ -185,27 +233,40 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       {isMenuOpen && (
-        <div className="md:hidden bg-white border-t border-gray-100 p-4 space-y-2 animate-in slide-in-from-top duration-300">
-          {navLinks.map((link) => (
-            <Link 
-              key={link.name} 
-              to={link.path} 
-              className="block px-4 py-3 text-base font-bold text-gray-600 hover:bg-blue-50 hover:text-blue-600 rounded-xl transition-all"
-              onClick={(e) => {
-                setIsMenuOpen(false);
-                handleNavLinkClick(e, link.path);
-              }}
-            >
-              {link.name}
-            </Link>
-          ))}
+        <div className="md:hidden bg-white border-t border-gray-100 p-4 space-y-1 animate-in slide-in-from-top duration-300">
+          {navLinks.map((link) => {
+            const active = isActiveLink(link.path);
+            return (
+              <Link 
+                key={link.name} 
+                to={link.path} 
+                className={`mobile-nav-item flex items-center gap-3 px-4 py-3 text-base font-bold rounded-xl transition-all duration-200 relative overflow-hidden
+                  ${active 
+                    ? 'bg-blue-600/10 text-blue-400 border-l-2 border-blue-500' 
+                    : 'text-gray-400 hover:bg-slate-800 hover:text-blue-400'}
+                `}
+                onClick={(e) => {
+                  createRipple(e);
+                  setIsMenuOpen(false);
+                  handleNavLinkClick(e, link.path);
+                }}
+              >
+                {active && <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse flex-shrink-0" />}
+                {link.name}
+              </Link>
+            );
+          })}
           {isAdmin && (
             <Link 
               to="/admin" 
-              className="flex items-center gap-2 px-4 py-3 text-base font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-xl transition-all"
-              onClick={() => setIsMenuOpen(false)}
+              className={`mobile-nav-item flex items-center gap-3 px-4 py-3 text-base font-bold rounded-xl transition-all duration-200 relative overflow-hidden
+                ${isActiveLink('/admin')
+                  ? 'bg-blue-600/10 text-blue-400 border-l-2 border-blue-500'
+                  : 'text-blue-400 hover:bg-blue-600/10'}
+              `}
+              onClick={(e) => { createRipple(e); setIsMenuOpen(false); }}
             >
-              <LayoutDashboard className="w-5 h-5" />
+              <LayoutDashboard className="w-5 h-5 flex-shrink-0" />
               Trang quản trị
             </Link>
           )}
@@ -213,7 +274,7 @@ const Navbar = () => {
             <div className="pt-4 mt-4 border-t border-gray-100">
               <Link 
                 to="/login" 
-                className="block w-full bg-blue-600 text-white text-center py-3 rounded-xl font-bold shadow-lg"
+                className="block w-full bg-blue-600 text-white text-center py-3 rounded-xl font-bold shadow-lg active:scale-95 transition-transform"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Đăng nhập
