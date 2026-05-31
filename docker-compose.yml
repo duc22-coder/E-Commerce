@@ -1,4 +1,5 @@
 version: '3.8'
+
 services:
   app:
     build: ./backend
@@ -24,7 +25,7 @@ services:
     image: mysql:8.0
     container_name: ecommerce_mysql
     ports:
-      - "3306:3306"
+      - "3307:3306"
     environment:
       - MYSQL_DATABASE=ecommerce_db
       - MYSQL_ROOT_PASSWORD=123456
@@ -38,6 +39,21 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: ecommerce_frontend
+    ports:
+      - "5173:5173"
+    depends_on:
+      - app
+    networks:
+      - ecommerce_network
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    command: npm run dev -- --host 0.0.0.0
 
 networks:
   ecommerce_network:
