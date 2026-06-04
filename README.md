@@ -48,7 +48,7 @@ cd frontend && npm install && npm run dev
 | Vai trò | Email | Password |
 |---|---|---|
 | Admin | `admin@ecommerce.com` | `admin123` |
-| User | `user@ecommerce.com` | `user123` |
+| User | `nguyenanhduc220805@gmail.com` | `123456` |
 
 ---
 
